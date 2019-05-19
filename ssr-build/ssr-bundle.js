@@ -171,7 +171,7 @@ var help_HelpCard = function (_Component) {
     }
 
     HelpCard.prototype.render = function render(props) {
-        var examples = ['http://localhost:4000/metapages/dynamic-plot/metapage.json', 'http://localhost:4000/metapages/linked-molecule-viewers/metapage.json'].map(function (exampleUrl) {
+        var examples = ['https://metapages.org/metapages/linked-molecule-viewers/metapage.json', 'https://metapages.org/metapages/dynamic-plot/metapage.json'].map(function (exampleUrl) {
             return Object(preact_min["h"])(
                 'div',
                 { 'class': 'siimple-btn', onClick: function onClick() {
@@ -379,11 +379,25 @@ var getLayout = function getLayout(metapageDefinition, layoutName) {
 /**
  * If there is no layout, just dump the metaframes
  * in a simple grid, without caring about the order
+ * "layouts": {
+      "flexboxgrid" : {
+        "version": 1,
+        "docs": "http://flexboxgrid.com/",
+        "layout": [
+          [ {"name":"input-button", "width":"col-xs-4", "style": {"maxHeight":"400px"}}, {"url":"http://localhost:4000/metaframes/passthrough-arrow/?rotation=90", "width":"col-xs-2"}, {"name":"viewer1", "width":"col-xs-6"} ],
+          [ {"name":"passthrough2", "width":"col-xs-6"}, {"name":"passthrough1", "width":"col-xs-6", "style": {"maxHeight":"100px"}} ],
+          [ {"name":"viewer2", "width":"col-xs-6", "style": {"maxHeight":"400px"}} , {"name":"viewer3", "width":"col-xs-6"} ]
+        ],
+        "options": {
+          "arrows": true
+        }
+      }
+    }
  */
-var generateDefaultLayout = function generateDefaultLayout(metapage, name) {
+var generateDefaultLayout = function generateDefaultLayout(metapage) {
 	var metaframes = metapage.metaframes();
 	var metaframeIds = Object.keys(metaframes);
-	columns = columns ? columns : 2;
+	var columns = 2;
 	if (metaframeIds.length < 2) {
 		columns = 1;
 	}
@@ -400,10 +414,10 @@ var generateDefaultLayout = function generateDefaultLayout(metapage, name) {
 		if (!result[rowIndex]) {
 			result[rowIndex] = [];
 		}
-		result[rowIndex].push({ name: metaframeIds.pop() });
+		result[rowIndex].push({ name: metaframeIds.pop(), width: 'col-xs', style: {} });
 		colIndex++;
 	}
-	return result;
+	return { layout: { layout: result }, layoutName: 'flexboxgrid' };
 };
 
 // const getCssNumber = (val, defaultVal) => {
@@ -532,7 +546,6 @@ var view_metapage_applyLayout = function applyLayout(name, layout, metapage) {
 					rowElements
 				);
 			});
-			break;
 		default:
 			throw 'Unknown layout: ' + name;
 	}
@@ -560,7 +573,11 @@ var view_metapage_ViewMetapage = function (_Component) {
 		var layout = getLayout(definition, layoutName);
 		if (!layout) {
 			console.log('no layout, generating default layout="' + layoutName + '"');
-			layout = generateDefaultLayout(metapage, layoutName);
+
+			var _generateDefaultLayou = generateDefaultLayout(metapage);
+
+			layoutName = _generateDefaultLayou.layoutName;
+			layout = _generateDefaultLayou.layout;
 		}
 
 		var metaframesArranged = view_metapage_applyLayout(layoutName, layout, metapage);
@@ -623,24 +640,13 @@ var app_MetapageApp = function (_Component) {
 			alert: null, // {level,message}
 			metapage: null,
 			metapageDefinition: null,
-			queueLoad: true,
+			params: {}, // from the URL hash string
 			status: null, //Status.loading,
 			url: null
 		}, _this.load = function () {
 			return new Promise(function ($return, $error) {
-				var maybeReload, hashParams, loadState, metapageDefinition, metapage;
+				var loadState, metapageDefinition, metapage;
 
-				if (_this.state.status == Status.loading) {
-					_this.setState({
-						queueLoad: true
-					});
-					return $return();
-				}
-				maybeReload = function maybeReload() {
-					// if (this.state.queueLoad) {
-					// 	setTimeout(this.load, 0);
-					// }
-				};
 				if (_this.state.metapage) {
 					_this.state.metapage.dispose();
 				}
@@ -650,11 +656,10 @@ var app_MetapageApp = function (_Component) {
 					metapageDefinition: null,
 					status: Status.loading
 				});
-				hashParams = _this.getHashParameters();
-				if (hashParams == null) {
+
+				if (Object.keys(_this.state.params).length == 0) {
 					// This will show the help
 					_this.setState({ status: Status.empty });
-					maybeReload();
 					return $return();
 				}
 				var $Try_1_Post = function () {
@@ -669,13 +674,12 @@ var app_MetapageApp = function (_Component) {
 							alert: { level: 'error', message: err },
 							status: Status.loaded
 						});
-						maybeReload();
 						return $Try_1_Post();
 					} catch ($boundEx) {
 						return $error($boundEx);
 					}
 				};try {
-					return Promise.resolve(_this.getMetapageDefinitionFromParams(hashParams)).then(function ($await_7) {
+					return Promise.resolve(_this.getMetapageDefinitionFromParams(_this.state.params)).then(function ($await_7) {
 						try {
 							loadState = $await_7;
 							_this.setState(loadState);
@@ -699,7 +703,6 @@ var app_MetapageApp = function (_Component) {
 							_this.setState({
 								status: Status.loaded
 							});
-							maybeReload();
 
 							return $Try_1_Post();
 						} catch ($boundEx) {
@@ -712,6 +715,7 @@ var app_MetapageApp = function (_Component) {
 			});
 		}, _this.onHashChange = function () {
 			// console.log('onhashchanage', window.location.hash);
+			_this.setState({ params: _this.getHashParameters() });
 			_this.load();
 		}, _this.setHashParameter = function (key, val) {
 			var hash = document.location.hash;
@@ -762,7 +766,6 @@ var app_MetapageApp = function (_Component) {
 			return params;
 		}, _this.setUrl = function (url) {
 			_this.setHashParameter('url', url);
-			// this.load();
 		}, _this.getMetapageDefinitionFromParams = function (hashParams) {
 			return new Promise(function ($return, $error) {
 				var result, url, response, metapageDefinition;
@@ -773,6 +776,14 @@ var app_MetapageApp = function (_Component) {
 				};
 				url = hashParams['url'];
 				if (url) {
+					console.log('raw url', url);
+					if (!url.endsWith('.json')) {
+						if (!url.endsWith('/')) {
+							url += '/';
+						}
+						url += 'metapage.json';
+					}
+					console.log('final url', url);
 					_this.setState({
 						alert: { level: 'primary', message: 'loading url: ' + url },
 						url: url
@@ -855,7 +866,7 @@ var app_MetapageApp = function (_Component) {
 
 	MetapageApp.prototype.componentDidMount = function componentDidMount() {
 		window.onhashchange = this.onHashChange;
-		this.load();
+		this.onHashChange();
 	};
 
 	MetapageApp.prototype.componentWillUnmount = function componentWillUnmount() {
@@ -907,10 +918,11 @@ var app_MetapageApp = function (_Component) {
 					return this.getHelp();
 				}
 				//<Plugins definition={metapageDefinition} />
+				var header = this.state.params['header'] == '0' ? null : Object(preact_min["h"])(components_header, { definition: metapageDefinition, url: this.state.url });
 				return Object(preact_min["h"])(
 					'div',
 					{ id: 'app' },
-					Object(preact_min["h"])(components_header, { definition: metapageDefinition, url: this.state.url }),
+					header,
 					Object(preact_min["h"])(view_metapage_ViewMetapage, { definition: metapageDefinition, metapage: metapage, setUrl: this.setUrl })
 				);
 
