@@ -113,7 +113,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var RequiredProps = ['url', 'id', 'metapage'];
 
 // props: url, metapage, maxHeight, id (==url)
-
 var plugin_Plugin = function (_Component) {
     _inherits(Plugin, _Component);
 
@@ -194,8 +193,6 @@ var plugin_Plugin = function (_Component) {
 
     return Plugin;
 }(preact_min["Component"]);
-
-
 // CONCATENATED MODULE: ./components/header/index.js
 
 
@@ -254,7 +251,7 @@ var header_Header = function (_Component) {
 		}
 
 		var plugins = !props.definition.plugins ? null : props.definition.plugins.map(function (url) {
-			return Object(preact_min["h"])(/* Cannot get final name for export "Plugin" in "./components/plugin.js" (known exports: default, known reexports: ) */ undefined, { id: url, url: url, metapage: props.metapage });
+			return Object(preact_min["h"])(plugin_Plugin, { id: url, url: url, metapage: props.metapage });
 			// return <a class="siimple-navbar-item" id={url} href={url}>{url}</a>;
 		});
 
@@ -295,29 +292,44 @@ function help__inherits(subClass, superClass) { if (typeof superClass !== "funct
 
 
 var help__ref = Object(preact_min["h"])(
-    'div',
-    { 'class': 'siimple-card-header' },
-    'Documentatation'
+    "div",
+    { "class": "siimple-card-header" },
+    Object(preact_min["h"])(
+        "a",
+        { href: "https://metapages.org/", "class": "siimple-link" },
+        "Metapage"
+    ),
+    " viewer"
 );
 
 var _ref2 = Object(preact_min["h"])(
-    'div',
-    { 'class': 'siimple-card-body' },
+    "div",
+    { "class": "siimple-card-body" },
+    "This website takes a ",
     Object(preact_min["h"])(
-        'div',
-        { 'class': 'siimple-h3' },
-        'URL hash parameters'
+        "a",
+        { href: "https://metapages.org/api/#metapagedefinition", "class": "siimple-link" },
+        "metapage definition"
     ),
+    " and constructs the metapage application."
+);
+
+var _ref3 = Object(preact_min["h"])(
+    "div",
+    { "class": "siimple-card-header" },
+    "The ",
     Object(preact_min["h"])(
-        'pre',
-        { 'class': 'siimple-pre' },
-        'Example: someurl'
+        "a",
+        { href: "https://metapages.org/api/#metapagedefinition", "class": "siimple-link" },
+        "metapage definition"
     ),
+    " can be given as a hash parameter (",
     Object(preact_min["h"])(
-        'pre',
-        { 'class': 'siimple-pre' },
-        'url: points to the metapage JSON definition. base64: encoded string of the metapage JSON definition'
-    )
+        "code",
+        { "class": "siimple-code" },
+        "#url=?"
+    ),
+    "):"
 );
 
 var help_HelpCard = function (_Component) {
@@ -330,24 +342,34 @@ var help_HelpCard = function (_Component) {
     }
 
     HelpCard.prototype.render = function render(props) {
-        var examples = ['https://metapages.org/metapages/linked-molecule-viewers/metapage.json', 'https://metapages.org/metapages/dynamic-plot/metapage.json'].map(function (exampleUrl) {
-            return Object(preact_min["h"])(
-                'div',
-                { 'class': 'siimple-btn', onClick: function onClick() {
-                        props.setUrl(exampleUrl);
-                    } },
-                exampleUrl
-            );
-        });
+        // const examples = [
+        //     'https://metapages.org/metapages/linked-molecule-viewers/metapage.json',
+        //     'https://metapages.org/metapages/dynamic-plot/metapage.json',
+        // ].map((exampleUrl) => <div class="siimple-btn" onClick={() => {props.setUrl(exampleUrl)}} >{exampleUrl}</div>);
+
+        var urlExampleMetapageJsonAsHash = typeof window !== "undefined" ? window.location.origin + "/#url=https://metapages.org/metapages/dynamic-plot/metapage.json" : null;
         return Object(preact_min["h"])(
-            'div',
-            { 'class': 'siimple-card', style: 'max-width:600px' },
+            "div",
+            { "class": "siimple-card" },
             help__ref,
             _ref2,
             Object(preact_min["h"])(
-                'div',
-                { 'class': 'siimple-card-footer' },
-                examples
+                "div",
+                { "class": "siimple-card" },
+                _ref3,
+                Object(preact_min["h"])(
+                    "div",
+                    { "class": "siimple-card-body" },
+                    Object(preact_min["h"])(
+                        "blockquote",
+                        { "class": "siimple-tip siimple-tip--primary" },
+                        Object(preact_min["h"])(
+                            "a",
+                            { href: urlExampleMetapageJsonAsHash, "class": "siimple-link" },
+                            urlExampleMetapageJsonAsHash
+                        )
+                    )
+                )
             )
         );
     };
@@ -786,13 +808,66 @@ var createNonce = function createNonce() {
 	return randomString(8);
 };
 
-var app__ref = Object(preact_min["h"])('div', { 'class': 'siimple-spinner siimple-spinner--primary' });
+var setHashParameter = function setHashParameter(key, val) {
+	var hash = document.location.hash;
+	if (hash.startsWith('#')) {
+		hash = hash.substr(1);
+	}
+	var tokens = hash.split('&');
+	var found = false;
+	for (var i = 0; i < tokens.length; i++) {
+		var token = tokens[i];
+		var keyVal = token.split('=');
+		if (keyVal[0] == key) {
+			tokens[i] = key + '=' + val;
+			found = true;
+			break;
+		}
+	}
+	if (!found) {
+		tokens.push(key + '=' + val);
+	}
+	tokens = tokens.filter(function (token) {
+		return token.length > 1;
+	});
+	document.location.hash = tokens.join('&');
+};
 
-var app__ref2 = Object(preact_min["h"])(
-	'div',
-	{ 'class': 'siimple-list-item' },
-	Object(preact_min["h"])(alert_Alert, { level: 'primary', message: 'No metapage definition' })
-);
+var removeHashParameter = function removeHashParameter(key) {
+	var hash = document.location.hash;
+	if (hash.startsWith('#')) {
+		hash = hash.substr(1);
+	}
+	var tokens = hash.split('&').filter(function (token) {
+		var keyVal = token.split('=');
+		return keyVal[0] != key;
+	});
+	document.location.hash = tokens.join('&');
+};
+
+var getHashParameters = function getHashParameters() {
+	var hash = document.location.hash;
+	// console.log('hash', hash);
+	if (hash.length < 3) {
+		//TODO set state to mean the page is empty, and probably show the docs
+		return null;
+	}
+	var tokens = hash.substr(1).split('&');
+	var hashParams = {};
+	tokens.forEach(function (token) {
+		var keyVal = token.split('=');
+		hashParams[keyVal[0]] = keyVal[1] || true;
+	});
+	return hashParams;
+};
+
+var setUrl = function setUrl(url) {
+	setHashParameter('url', url);
+};
+
+var app__ref = Object(preact_min["h"])(help_HelpCard, { setUrl: setUrl });
+
+var app__ref2 = Object(preact_min["h"])('div', { 'class': 'siimple-spinner siimple-spinner--primary' });
 
 var app_MetapageApp = function (_Component) {
 	app__inherits(MetapageApp, _Component);
@@ -894,58 +969,8 @@ var app_MetapageApp = function (_Component) {
 				}
 			});
 		}, _this.onHashChange = function () {
-			// console.log('onhashchanage', window.location.hash);
-			_this.setState({ params: _this.getHashParameters() });
+			_this.setState({ params: getHashParameters() });
 			_this.load();
-		}, _this.setHashParameter = function (key, val) {
-			var hash = document.location.hash;
-			if (hash.startsWith('#')) {
-				hash = hash.substr(1);
-			}
-			var tokens = hash.split('&');
-			var found = false;
-			for (var i = 0; i < tokens.length; i++) {
-				var token = tokens[i];
-				var keyVal = token.split('=');
-				if (keyVal[0] == key) {
-					tokens[i] = key + '=' + val;
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				tokens.push(key + '=' + val);
-			}
-			tokens = tokens.filter(function (token) {
-				return token.length > 1;
-			});
-			document.location.hash = tokens.join('&');
-		}, _this.removeHashParameter = function (key) {
-			var hash = document.location.hash;
-			if (hash.startsWith('#')) {
-				hash = hash.substr(1);
-			}
-			var tokens = hash.split('&').filter(function (token) {
-				var keyVal = token.split('=');
-				return keyVal[0] != key;
-			});
-			document.location.hash = tokens.join('&');
-		}, _this.getHashParameters = function () {
-			var hash = document.location.hash;
-			// console.log('hash', hash);
-			if (hash.length < 3) {
-				//TODO set state to mean the page is empty, and probably show the docs
-				return null;
-			}
-			var tokens = hash.substr(1).split('&');
-			var hashParams = {};
-			tokens.forEach(function (token) {
-				var keyVal = token.split('=');
-				hashParams[keyVal[0]] = keyVal[1] || true;
-			});
-			return hashParams;
-		}, _this.setUrl = function (url) {
-			_this.setHashParameter('url', url);
 		}, _this.getMetapageDefinitionFromParams = function (hashParams) {
 			return new Promise(function ($return, $error) {
 				var result, url, response, metapageDefinition;
@@ -1038,7 +1063,7 @@ var app_MetapageApp = function (_Component) {
 				return $If_5.call(this);
 			});
 		}, _this.getHelp = function () {
-			return Object(preact_min["h"])(help_HelpCard, { setUrl: _this.setUrl });
+			return app__ref;
 		}, _this.getAlert = function () {
 			return _this.state.alert ? Object(preact_min["h"])(alert_Alert, _this.state.alert) : null;
 		}, _temp), app__possibleConstructorReturn(_this, _ret);
@@ -1059,13 +1084,13 @@ var app_MetapageApp = function (_Component) {
 				var alert = this.getAlert();
 				return Object(preact_min["h"])(
 					'div',
-					{ 'class': 'siimple-list', style: 'max-width:600px;' },
+					{ 'class': 'siimple-list' },
 					Object(preact_min["h"])(
 						'div',
 						{ 'class': 'siimple-list-item' },
 						alert
 					),
-					app__ref
+					app__ref2
 				);
 
 			case Status.loaded:
@@ -1073,7 +1098,7 @@ var app_MetapageApp = function (_Component) {
 					var _alert = this.getAlert();
 					return Object(preact_min["h"])(
 						'div',
-						{ 'class': 'siimple-list', style: 'max-width:600px;' },
+						{ 'class': 'siimple-list' },
 						Object(preact_min["h"])(
 							'div',
 							{ 'class': 'siimple-list-item' },
@@ -1089,8 +1114,7 @@ var app_MetapageApp = function (_Component) {
 
 				var metapage = this.state.metapage;
 				var metapageDefinition = this.state.metapageDefinition;
-				// console.log('loaded metapage', metapage);
-				// console.log('loaded metapageDefinition', metapageDefinition);
+
 				// No data? Show the help then.
 				if (!metapage) {
 					return this.getHelp();
@@ -1107,8 +1131,7 @@ var app_MetapageApp = function (_Component) {
 			case Status.empty:
 				return Object(preact_min["h"])(
 					'div',
-					{ 'class': 'siimple-list', style: 'max-width:600px;' },
-					app__ref2,
+					{ 'class': 'siimple-list' },
 					this.getHelp()
 				);
 
@@ -1116,7 +1139,7 @@ var app_MetapageApp = function (_Component) {
 				var _alert2 = this.getAlert();
 				return Object(preact_min["h"])(
 					'div',
-					{ 'class': 'siimple-list', style: 'max-width:600px;' },
+					{ 'class': 'siimple-list' },
 					Object(preact_min["h"])(
 						'div',
 						{ 'class': 'siimple-list-item' },
