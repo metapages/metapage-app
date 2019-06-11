@@ -280,104 +280,6 @@ var header_Header = function (_Component) {
 
 
 ;
-// CONCATENATED MODULE: ./components/help.js
-
-
-function help__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function help__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function help__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-var help__ref = Object(preact_min["h"])(
-    "div",
-    { "class": "siimple-card-header" },
-    Object(preact_min["h"])(
-        "a",
-        { href: "https://metapages.org/", "class": "siimple-link" },
-        "Metapage"
-    ),
-    " viewer"
-);
-
-var _ref2 = Object(preact_min["h"])(
-    "div",
-    { "class": "siimple-card-body" },
-    "This website takes a ",
-    Object(preact_min["h"])(
-        "a",
-        { href: "https://metapages.org/api/#metapagedefinition", "class": "siimple-link" },
-        "metapage definition"
-    ),
-    " and constructs the metapage application."
-);
-
-var _ref3 = Object(preact_min["h"])(
-    "div",
-    { "class": "siimple-card-header" },
-    "The ",
-    Object(preact_min["h"])(
-        "a",
-        { href: "https://metapages.org/api/#metapagedefinition", "class": "siimple-link" },
-        "metapage definition"
-    ),
-    " can be given as a hash parameter (",
-    Object(preact_min["h"])(
-        "code",
-        { "class": "siimple-code" },
-        "#url=?"
-    ),
-    "):"
-);
-
-var help_HelpCard = function (_Component) {
-    help__inherits(HelpCard, _Component);
-
-    function HelpCard() {
-        help__classCallCheck(this, HelpCard);
-
-        return help__possibleConstructorReturn(this, _Component.apply(this, arguments));
-    }
-
-    HelpCard.prototype.render = function render(props) {
-        // const examples = [
-        //     'https://metapages.org/metapages/linked-molecule-viewers/metapage.json',
-        //     'https://metapages.org/metapages/dynamic-plot/metapage.json',
-        // ].map((exampleUrl) => <div class="siimple-btn" onClick={() => {props.setUrl(exampleUrl)}} >{exampleUrl}</div>);
-
-        var urlExampleMetapageJsonAsHash = typeof window !== "undefined" ? window.location.origin + "/#url=https://metapages.org/metapages/dynamic-plot/metapage.json" : null;
-        return Object(preact_min["h"])(
-            "div",
-            { "class": "siimple-card" },
-            help__ref,
-            _ref2,
-            Object(preact_min["h"])(
-                "div",
-                { "class": "siimple-card" },
-                _ref3,
-                Object(preact_min["h"])(
-                    "div",
-                    { "class": "siimple-card-body" },
-                    Object(preact_min["h"])(
-                        "blockquote",
-                        { "class": "siimple-tip siimple-tip--primary" },
-                        Object(preact_min["h"])(
-                            "a",
-                            { href: urlExampleMetapageJsonAsHash, "class": "siimple-link" },
-                            urlExampleMetapageJsonAsHash
-                        )
-                    )
-                )
-            )
-        );
-    };
-
-    return HelpCard;
-}(preact_min["Component"]);
-
-
 // CONCATENATED MODULE: ./components/alert.js
 
 
@@ -431,7 +333,7 @@ var metaframe__ref = Object(preact_min["h"])(
 	"Metaframe class is missing id prop"
 );
 
-var metaframe__ref2 = Object(preact_min["h"])(
+var _ref2 = Object(preact_min["h"])(
 	"div",
 	{ "class": "siimple-alert siimple-alert--error" },
 	"iframe is not a Node"
@@ -482,7 +384,7 @@ var metaframe_Metaframe = function (_Component) {
 			);
 		}
 		if (!(props.iframe instanceof Node)) {
-			return metaframe__ref2;
+			return _ref2;
 		}
 
 		// Optionally show a warning instead of the metaframe if missing required configuration
@@ -775,6 +677,8 @@ var view_metapage_ViewMetapage = function (_Component) {
 
 
 // CONCATENATED MODULE: ./components/app.js
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 
 
 function app__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -783,6 +687,17 @@ function app__possibleConstructorReturn(self, call) { if (!self) { throw new Ref
 
 function app__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Data flow:
+ *  - if hash parameter "url" for a url to a metapage.json file
+ * 		- if there, load it
+ * 		- if an error, show the error
+ *  - elseif check hash parameter "base64" for an encoded metapage json blob
+ * 		- if there, load it
+ * 		- if an error, show the error bottom of the text field
+ * 		- also show the json in the help text box
+ *  - else show the help 
+ */
 
 
 
@@ -790,7 +705,47 @@ function app__inherits(subClass, superClass) { if (typeof superClass !== "functi
 
 
 
-var Status = Object.freeze(['loading', 'loaded', 'empty'].reduce(function (obj, currentVal) {
+var exampleJson = JSON.stringify({
+	"version": "0.3",
+	"meta": {
+		"layouts": {
+			"flexboxgrid": {
+				"docs": "http://flexboxgrid.com/",
+				"layout": [[{ "name": "random-data-generator", "width": "col-xs-4", "style": { "maxHeight": "600px" } }, { "url": "https://metapages.org/metaframes/passthrough-arrow/?rotation=90", "width": "col-xs-1" }, { "name": "graph-dynamic", "width": "col-xs-7" }]]
+			}
+		}
+	},
+	"metaframes": {
+		"random-data-generator": {
+			"url": "https://metapages.org/metaframes/random-data-generator/?frequency=1000"
+		},
+		"graph-dynamic": {
+			"url": "https://metapages.org/metaframes/graph-dynamic/",
+			"inputs": [{
+				"metaframe": "random-data-generator",
+				"source": "y"
+			}]
+		}
+	}
+}, null, "  ");
+
+var examples = ['https://metapages.org/metapages/linked-molecule-viewers/metapage.json', 'https://metapages.org/metapages/dynamic-plot/metapage.json'].map(function (url) {
+	return (typeof window !== "undefined" ? window.location.origin : "") + '/#url=' + url;
+}).map(function (url) {
+	return Object(preact_min["h"])(
+		'div',
+		{ 'class': 'siimple-list-item' },
+		Object(preact_min["h"])(
+			'a',
+			{ href: url, 'class': 'siimple-link' },
+			url
+		)
+	);
+});
+
+var urlExampleMetapageJsonAsHash = typeof window !== "undefined" ? window.location.origin + '/#url=https://metapages.org/metapages/dynamic-plot/metapage.json' : null;
+
+var Status = Object.freeze(['loading', 'loaded', 'help'].reduce(function (obj, currentVal) {
 	obj[currentVal] = currentVal;
 	return obj;
 }, {}));
@@ -830,24 +785,16 @@ var setHashParameter = function setHashParameter(key, val) {
 	tokens = tokens.filter(function (token) {
 		return token.length > 1;
 	});
-	document.location.hash = tokens.join('&');
-};
 
-var removeHashParameter = function removeHashParameter(key) {
-	var hash = document.location.hash;
-	if (hash.startsWith('#')) {
-		hash = hash.substr(1);
+	if (history.replaceState) {
+		history.replaceState(null, null, '#' + tokens.join('&'));
+	} else {
+		location.hash = '#' + tokens.join('&');
 	}
-	var tokens = hash.split('&').filter(function (token) {
-		var keyVal = token.split('=');
-		return keyVal[0] != key;
-	});
-	document.location.hash = tokens.join('&');
 };
 
 var getHashParameters = function getHashParameters() {
 	var hash = document.location.hash;
-	// console.log('hash', hash);
 	if (hash.length < 3) {
 		//TODO set state to mean the page is empty, and probably show the docs
 		return null;
@@ -861,13 +808,98 @@ var getHashParameters = function getHashParameters() {
 	return hashParams;
 };
 
-var setUrl = function setUrl(url) {
-	setHashParameter('url', url);
-};
+var app__ref = Object(preact_min["h"])('br', null);
 
-var app__ref = Object(preact_min["h"])(help_HelpCard, { setUrl: setUrl });
+var app__ref2 = Object(preact_min["h"])('br', null);
 
-var app__ref2 = Object(preact_min["h"])('div', { 'class': 'siimple-spinner siimple-spinner--primary' });
+var _ref3 = Object(preact_min["h"])('br', null);
+
+var _ref4 = Object(preact_min["h"])('div', { 'class': 'siimple-spinner siimple-spinner--primary' });
+
+var _ref5 = Object(preact_min["h"])(
+	'div',
+	{ 'class': 'siimple-card-header' },
+	Object(preact_min["h"])(
+		'a',
+		{ href: 'https://metapages.org/', 'class': 'siimple-link' },
+		'Metapage'
+	),
+	' viewer'
+);
+
+var _ref6 = Object(preact_min["h"])(
+	'div',
+	{ 'class': 'siimple-card-body' },
+	'Provide a ',
+	Object(preact_min["h"])(
+		'a',
+		{ href: 'https://metapages.org/api/#metapagedefinition', 'class': 'siimple-link' },
+		'metapage definition'
+	),
+	' and this app will build the application. The definition can be provided in the URL hash parameters one of two ways:'
+);
+
+var _ref7 = Object(preact_min["h"])(
+	'div',
+	{ 'class': 'siimple-card-body' },
+	Object(preact_min["h"])(
+		'label',
+		{ 'class': 'siimple-label' },
+		'(',
+		Object(preact_min["h"])(
+			'code',
+			{ 'class': 'siimple-code' },
+			'#url=?'
+		),
+		') pointing to the location of the metapage.json, e.g.:'
+	),
+	Object(preact_min["h"])('br', null),
+	Object(preact_min["h"])(
+		'a',
+		{ href: urlExampleMetapageJsonAsHash, 'class': 'siimple-link' },
+		urlExampleMetapageJsonAsHash
+	)
+);
+
+var _ref8 = Object(preact_min["h"])(
+	'label',
+	{ 'class': 'siimple-label' },
+	'(',
+	Object(preact_min["h"])(
+		'code',
+		{ 'class': 'siimple-code' },
+		'#base64=?'
+	),
+	') containing the base64 encoded metapage JSON:'
+);
+
+var _ref9 = Object(preact_min["h"])('br', null);
+
+var _ref10 = Object(preact_min["h"])('br', null);
+
+var _ref11 = Object(preact_min["h"])('br', null);
+
+var _ref12 = Object(preact_min["h"])('br', null);
+
+var _ref13 = Object(preact_min["h"])(
+	'div',
+	{ 'class': 'siimple-card' },
+	Object(preact_min["h"])(
+		'div',
+		{ 'class': 'siimple-card-body' },
+		Object(preact_min["h"])(
+			'label',
+			{ 'class': 'siimple-label' },
+			'Examples:'
+		),
+		Object(preact_min["h"])('br', null),
+		Object(preact_min["h"])(
+			'div',
+			{ 'class': 'siimple-list' },
+			examples
+		)
+	)
+);
 
 var app_MetapageApp = function (_Component) {
 	app__inherits(MetapageApp, _Component);
@@ -883,195 +915,257 @@ var app_MetapageApp = function (_Component) {
 
 		return _ret = (_temp = (_this = app__possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
 			alert: null, // {level,message}
+			base64Text: null,
 			metapage: null,
 			metapageDefinition: null,
 			nonce_loading: null,
 			params: {}, // from the URL hash string
-			status: null, //Status.loading,
+			status: Status.loading, //Status.loading,
 			url: null
 		}, _this.load = function () {
 			return new Promise(function ($return, $error) {
-				var nonce, loadState, metapageDefinition, metapage;
+				var hashParams, moreThanOneParam, noParams, paramKey, nonce, loadResult, blob, error, metapageDefinition, newState;
 
 				if (_this.state.metapage) {
 					_this.state.metapage.dispose();
 				}
 
-				// if load is called again, the async portion of this will be cancelled
+				hashParams = getHashParameters();
+
+				moreThanOneParam = hashParams && hashParams['url'] && hashParams['base64'];
+				noParams = !hashParams || Object.keys(hashParams).length == 0;
+				if (moreThanOneParam || noParams) {
+					_this.setState({
+						alert: moreThanOneParam ? "Only one hash param allowed (url or base64)" : null,
+						metapage: null,
+						metapageDefinition: null,
+						loadResult: null,
+						status: Status.help
+					});
+					return $return();
+				}
+
+				paramKey = hashParams['url'] ? 'url' : 'base64';
 				nonce = createNonce();
+				loadResult = { // {key:["url"|"base64"|"metaframe"], alert:<null|string>, nonce:<null|string>}
+					alert: null,
+					key: paramKey,
+					value: hashParams[paramKey],
+					nonce: nonce
+				};
 
 				_this.setState({
-					alert: null,
-					nonce_loading: nonce,
+					alert: null, // <null|string>
+					loadResult: loadResult,
 					metapage: null,
 					metapageDefinition: null,
 					status: Status.loading
 				});
 
-				if (!_this.state.params || Object.keys(_this.state.params).length == 0) {
-					// This will show the help
-					_this.setState({ status: Status.empty });
-					return $return();
-				}
-				var $Try_1_Post = function () {
+				return Promise.resolve(_this.getMetapageDefinitionFromParams(loadResult.key, loadResult.value, nonce)).then(function ($await_7) {
 					try {
+						blob = $await_7;
+						error = blob.error;
+						metapageDefinition = blob.metapageDefinition;
+						if (_this.state.loadResult.nonce != nonce) {
+							console.log('Cancelling previous loading definition');
+							// actually bail out early in this 
+							return $return();
+						}
+						// make new object so react picks up the state diff
+						newState = {
+							loadResult: _extends({}, loadResult),
+							metapage: null,
+							metapageDefinition: null,
+							status: Status.loaded
+						};
+						if (error) {
+							newState.loadResult.alert = { level: 'error', message: error };
+						} else if (!metapageDefinition) {
+							newState.loadResult.alert = { level: 'error', message: 'No metapage definition found' };
+						} else {
+							newState.metapageDefinition = metapageDefinition;
+							try {
+								newState.metapage = node_modules_metapage["Metapage"].from(metapageDefinition);
+							} catch (err) {
+								newState.loadResult.alert = { level: 'error', message: 'Failed to create a matapage from the definition: ' + err };
+							}
+						}
+						_this.setState(newState);
 						return $return();
 					} catch ($boundEx) {
 						return $error($boundEx);
 					}
-				};var $Try_1_Catch = function (err) {
-					try {
-						_this.setState({
-							alert: { level: 'error', message: err },
-							status: Status.loaded
-						});
-						return $Try_1_Post();
-					} catch ($boundEx) {
-						return $error($boundEx);
-					}
-				};try {
-					return Promise.resolve(_this.getMetapageDefinitionFromParams(_this.state.params)).then(function ($await_7) {
-						try {
-							loadState = $await_7; // { alert, metapageDefinition }
-							if (_this.state.nonce_loading != nonce) {
-								console.log('Cancelling previous loading definition');
-								return $return();
-							}
-							_this.setState(loadState);
-
-							metapageDefinition = loadState.metapageDefinition;
-
-							metapage = null;
-							if (metapageDefinition) {
-								try {
-									metapage = node_modules_metapage["Metapage"].from(metapageDefinition);
-									//TODO later
-									// document.location.hash = 'base64=' + btoa(unescape(encodeURIComponent(JSON.stringify(metapageDef))));
-									_this.setState({ metapage: metapage });
-								} catch (err) {
-									_this.setState({
-										alert: { level: 'error', message: 'Failed to load metapage object: ' + err }
-									});
-								}
-							}
-
-							_this.setState({
-								status: Status.loaded
-							});
-
-							return $Try_1_Post();
-						} catch ($boundEx) {
-							return $Try_1_Catch($boundEx);
-						}
-					}, $Try_1_Catch);
-				} catch (err) {
-					$Try_1_Catch(err)
-				}
+				}, $error);
 			});
-		}, _this.onHashChange = function () {
-			_this.setState({ params: getHashParameters() });
-			_this.load();
-		}, _this.getMetapageDefinitionFromParams = function (hashParams) {
+		}, _this.getMetapageDefinitionFromParams = function (key, value, nonce) {
 			return new Promise(function ($return, $error) {
-				var result, url, response, metapageDefinition;
+				var result, url, response, base64String, metapageJsonString;
 
 				result = {
-					alert: null,
-					metapageDefinition: null
+					error: undefined,
+					metapageDefinition: undefined
 				};
-				url = hashParams['url'];
-				if (url) {
-					console.log('raw url', url);
+
+				if (key === 'url') {
+					url = value;
 					if (!url.endsWith('.json')) {
 						if (!url.endsWith('/')) {
 							url += '/';
 						}
 						url += 'metapage.json';
 					}
-					console.log('final url', url);
 					_this.setState({
-						alert: { level: 'primary', message: 'loading url: ' + url },
-						url: url
+						loadingResult: {
+							alert: { level: 'primary', message: 'loading: ' + url },
+							key: key,
+							nonce: nonce,
+							url: url
+						}
 					});
-					// console.log(`loading ${url}`);
-					response = void 0;
-					var $Try_3_Post = function () {
+					var $Try_2_Post = function () {
 						try {
-							var $Try_4_Post = function () {
-								try {
-									return $If_5.call(this);
-								} catch ($boundEx) {
-									return $error($boundEx);
-								}
-							}.bind(this);var $Try_4_Catch = function (err) {
-								try {
-									result.alert = { level: 'error', message: 'Failed to parse metapage JSON: ' + err };
-									return $Try_4_Post();
-								} catch ($boundEx) {
-									return $error($boundEx);
-								}
-							};
-							try {
-								if (response) {
-									return Promise.resolve(response.json()).then(function ($await_8) {
-										try {
-											metapageDefinition = $await_8;
-											result.metapageDefinition = metapageDefinition;
-											return $If_6.call(this);
-										} catch ($boundEx) {
-											return $Try_4_Catch($boundEx);
-										}
-									}.bind(this), $Try_4_Catch);
-								}
-
-								function $If_6() {
-									return $Try_4_Post();
-								}
-
-								return $If_6.call(this);
-							} catch (err) {
-								$Try_4_Catch(err)
-							}
+							return $If_6.call(this);
 						} catch ($boundEx) {
 							return $error($boundEx);
 						}
-					}.bind(this);var $Try_3_Catch = function (err) {
+					}.bind(this);var $Try_2_Catch = function (err) {
 						try {
-							result.alert = { level: 'error', message: 'Failed to load #url ' + err };
-							return $Try_3_Post();
+							result.error = 'Failed to load #url ' + err;
+							return $Try_2_Post();
 						} catch ($boundEx) {
 							return $error($boundEx);
 						}
 					};try {
-						return Promise.resolve(fetch(url)).then(function ($await_9) {
+						return Promise.resolve(fetch(url)).then(function ($await_8) {
 							try {
-								response = $await_9;
-								return $Try_3_Post();
+								response = $await_8;
+								var $Try_3_Post = function () {
+									try {
+										return $Try_2_Post();
+									} catch ($boundEx) {
+										return $Try_2_Catch($boundEx);
+									}
+								};var $Try_3_Catch = function (err) {
+									try {
+										result.error = 'Failed to parse metapage JSON: ' + err;
+										return $Try_3_Post();
+									} catch ($boundEx) {
+										return $Try_2_Catch($boundEx);
+									}
+								};try {
+									return Promise.resolve(response.json()).then(function ($await_9) {
+										try {
+											result.metapageDefinition = $await_9;
+											return $Try_3_Post();
+										} catch ($boundEx) {
+											return $Try_3_Catch($boundEx);
+										}
+									}, $Try_3_Catch);
+								} catch (err) {
+									$Try_3_Catch(err)
+								}
 							} catch ($boundEx) {
-								return $Try_3_Catch($boundEx);
+								return $Try_2_Catch($boundEx);
 							}
-						}, $Try_3_Catch);
+						}, $Try_2_Catch);
 					} catch (err) {
-						$Try_3_Catch(err)
+						$Try_2_Catch(err)
 					}
+				} else {
+					if (key === 'base64') {
+						base64String = value;
+						metapageJsonString = void 0;
+						try {
+							metapageJsonString = atob(base64String);
+							_this.setState({ base64Text: metapageJsonString });
+							try {
+								result.metapageDefinition = JSON.parse(metapageJsonString);
+							} catch (err) {
+								result.error = 'Failed to JSON.parse #base64: ' + err;
+							}
+						} catch (err) {
+							result.error = 'Not valid base64: ' + err;
+						}
+					}
+					return $If_6.call(this);
 				}
-
-				function $If_5() {
+				function $If_6() {
 					return $return(result);
 				}
-
-				return $If_5.call(this);
 			});
-		}, _this.getHelp = function () {
-			return app__ref;
-		}, _this.getAlert = function () {
-			return _this.state.alert ? Object(preact_min["h"])(alert_Alert, _this.state.alert) : null;
+		}, _this.setExampleBase64 = function () {
+			_this.setState({ base64Text: exampleJson });
+		}, _this.setMetapageJsonBase64 = function () {
+			var metapageJsonString = document.getElementById("text:metapage.json").value;
+			setHashParameter('base64', btoa(metapageJsonString));
+			_this.load();
+		}, _this.getAlert = function (key) {
+			if (!key) {
+				return _this.state.alert ? Object(preact_min["h"])(
+					'div',
+					null,
+					Object(preact_min["h"])(alert_Alert, _this.state.alert),
+					app__ref
+				) : null;
+			} else {
+				return _this.state.loadResult && _this.state.loadResult.key === key && _this.state.loadResult.alert ? Object(preact_min["h"])(
+					'div',
+					null,
+					Object(preact_min["h"])(alert_Alert, _this.state.loadResult.alert),
+					app__ref2
+				) : null;
+			}
+		}, _this.renderStatusHelp = function () {
+			if (_this.state.alert) {
+				var alert = _this.getAlert();
+				return Object(preact_min["h"])(
+					'div',
+					null,
+					alert,
+					_ref3,
+					_this.getHelp()
+				);
+			} else {
+				return _this.getHelp();
+			}
+		}, _this.renderStatusLoading = function () {
+
+			var alert = _this.getAlert();
+			return Object(preact_min["h"])(
+				'div',
+				{ 'class': 'siimple-list' },
+				Object(preact_min["h"])(
+					'div',
+					{ 'class': 'siimple-list-item' },
+					alert
+				),
+				_ref4
+			);
+		}, _this.renderStatusLoaded = function () {
+			if (_this.state.metapage && _this.state.metapageDefinition) {
+				return _this.renderMetapage();
+			} else {
+				return _this.renderStatusHelp();
+			}
+		}, _this.renderMetapage = function () {
+			var metapage = _this.state.metapage;
+			var metapageDefinition = _this.state.metapageDefinition;
+
+			//<Plugins definition={metapageDefinition} />
+			var header = _this.state.params['header'] == '0' ? null : Object(preact_min["h"])(header_Header, { definition: metapageDefinition, metapage: metapage, url: _this.state.url });
+			return Object(preact_min["h"])(
+				'div',
+				{ id: 'app' },
+				header,
+				Object(preact_min["h"])(view_metapage_ViewMetapage, { definition: metapageDefinition, metapage: metapage, setHashParameter: setHashParameter })
+			);
 		}, _temp), app__possibleConstructorReturn(_this, _ret);
 	}
 
 	MetapageApp.prototype.componentDidMount = function componentDidMount() {
-		window.onhashchange = this.onHashChange;
-		this.onHashChange();
+		window.onhashchange = this.load;
+		this.load();
 	};
 
 	MetapageApp.prototype.componentWillUnmount = function componentWillUnmount() {
@@ -1079,76 +1173,65 @@ var app_MetapageApp = function (_Component) {
 	};
 
 	MetapageApp.prototype.render = function render() {
-		switch (this.state.status) {
-			case Status.loading:
-				var alert = this.getAlert();
-				return Object(preact_min["h"])(
+		// if there's a metapage, we don't care about anything else
+		if (this.state.metapage) {
+			return this.renderMetapage();
+			// the loading status is minimal
+		} else if (this.state.status == Status.loading) {
+			return this.renderStatusLoading();
+		}
+		// Otherwise it's the main help page with various alerts etc
+		var mainAlert = this.getAlert();
+		var alertUrl = this.getAlert('url');
+		var alertBase64 = this.getAlert('base64');
+
+		return Object(preact_min["h"])(
+			'div',
+			null,
+			mainAlert,
+			Object(preact_min["h"])(
+				'div',
+				{ 'class': 'siimple-card' },
+				_ref5,
+				_ref6,
+				Object(preact_min["h"])(
 					'div',
-					{ 'class': 'siimple-list' },
+					{ 'class': 'siimple-card' },
+					_ref7,
+					alertUrl
+				),
+				Object(preact_min["h"])(
+					'div',
+					{ 'class': 'siimple-card' },
 					Object(preact_min["h"])(
 						'div',
-						{ 'class': 'siimple-list-item' },
-						alert
-					),
-					app__ref2
-				);
-
-			case Status.loaded:
-				if (this.state.alert) {
-					var _alert = this.getAlert();
-					return Object(preact_min["h"])(
-						'div',
-						{ 'class': 'siimple-list' },
+						{ 'class': 'siimple-card-body' },
+						_ref8,
 						Object(preact_min["h"])(
 							'div',
-							{ 'class': 'siimple-list-item' },
-							_alert
+							{ 'class': 'siimple-btn siimple-btn--primary siimple-btn--small', onClick: this.setExampleBase64 },
+							'Example'
+						),
+						_ref9,
+						Object(preact_min["h"])(
+							'textarea',
+							{ id: 'text:metapage.json', 'class': 'siimple-textarea siimple-textarea--fluid', rows: this.state.base64Text != null ? this.state.base64Text.split("\n").length : 5 },
+							this.state.base64Text
 						),
 						Object(preact_min["h"])(
 							'div',
-							{ 'class': 'siimple-list-item' },
-							this.getHelp()
-						)
-					);
-				}
-
-				var metapage = this.state.metapage;
-				var metapageDefinition = this.state.metapageDefinition;
-
-				// No data? Show the help then.
-				if (!metapage) {
-					return this.getHelp();
-				}
-				//<Plugins definition={metapageDefinition} />
-				var header = this.state.params['header'] == '0' ? null : Object(preact_min["h"])(header_Header, { definition: metapageDefinition, metapage: metapage, url: this.state.url });
-				return Object(preact_min["h"])(
-					'div',
-					{ id: 'app' },
-					header,
-					Object(preact_min["h"])(view_metapage_ViewMetapage, { definition: metapageDefinition, metapage: metapage, setUrl: this.setUrl })
-				);
-
-			case Status.empty:
-				return Object(preact_min["h"])(
-					'div',
-					{ 'class': 'siimple-list' },
-					this.getHelp()
-				);
-
-			default:
-				var _alert2 = this.getAlert();
-				return Object(preact_min["h"])(
-					'div',
-					{ 'class': 'siimple-list' },
-					Object(preact_min["h"])(
-						'div',
-						{ 'class': 'siimple-list-item' },
-						_alert2
-					),
-					this.getHelp()
-				);
-
-		}
+							{ 'class': 'siimple-btn siimple-btn--primary', onClick: this.setMetapageJsonBase64 },
+							'Load'
+						),
+						alertBase64
+					)
+				),
+				_ref10,
+				_ref11,
+				_ref12,
+				_ref13
+			)
+		);
 	};
 
 	return MetapageApp;
