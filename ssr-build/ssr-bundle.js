@@ -99,7 +99,7 @@ var preact_min_default = /*#__PURE__*/__webpack_require__.n(preact_min);
 var node_modules_metapage = __webpack_require__("TdZ5");
 var metapage_default = /*#__PURE__*/__webpack_require__.n(node_modules_metapage);
 
-// CONCATENATED MODULE: ./components/plugin.js
+// CONCATENATED MODULE: ./components/metaframe.js
 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -107,223 +107,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-var RequiredProps = ['url', 'id', 'metapage'];
-
-// props: url, metapage, maxHeight, id (==url)
-var plugin_Plugin = function (_Component) {
-    _inherits(Plugin, _Component);
-
-    function Plugin() {
-        var _temp, _this, _ret;
-
-        _classCallCheck(this, Plugin);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.shouldComponentUpdate = function () {
-            return false;
-        }, _temp), _possibleConstructorReturn(_this, _ret);
-    }
-
-    // ensures the metaframe iframes aren't messed with
-    // tells Virtual DOM rendering/diffing algorithm that it shouldn't try to undo any external DOM mutations
-
-
-    Plugin.prototype.componentDidMount = function componentDidMount() {
-        // now mounted, can freely modify the DOM:
-        var metapage = this.props.metapage;
-        if (!metapage) {
-            return;
-        }
-        var url = this.props.url;
-        if (!url) {
-            return;
-        }
-        var pluginMetaframe = metapage.getPlugin(url);
-        if (!pluginMetaframe) {
-            return;
-        }
-        if (pluginMetaframe && pluginMetaframe instanceof Node) {
-            if (this.props.style && this.props.style.maxHeight) {
-                iframe.style.maxHeight = this.props.style.maxHeight;
-            }
-            this.base.appendChild(pluginMetaframe);
-        }
-    };
-
-    Plugin.prototype.render = function render(props) {
-        // Validation, show error if missing
-        for (var i = 0; i < RequiredProps.length; i++) {
-            var propName = RequiredProps[i];
-            if (!props[propName]) {
-                return Object(preact_min["h"])(
-                    'div',
-                    { 'class': 'siimple-alert siimple-alert--error' },
-                    'Plugin class is missing prop: ',
-                    propName
-                );
-            }
-        }
-
-        var url = props.url;
-
-        if (!props.metapage.getPlugin(url)) {
-            return Object(preact_min["h"])(
-                'div',
-                { 'class': 'siimple-alert siimple-alert--error' },
-                'No plugin for url: ',
-                url
-            );
-        }
-
-        var id = 'iframe-container-' + props.id;
-        return Object(preact_min["h"])(
-            'div',
-            { 'class': 'iframe-container', id: id, style: props.style },
-            ' ',
-            warning,
-            ' '
-        );
-    };
-
-    return Plugin;
-}(preact_min["Component"]);
-// CONCATENATED MODULE: ./components/header/index.js
-
-
-function header__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function header__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function header__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-var header_RequiredProps = ['definition', 'metapage'];
-
-var header_getMetapageName = function getMetapageName(_ref) {
-	var definition = _ref.definition,
-	    url = _ref.url;
-
-	var meta = definition ? definition.meta : null;
-	var nameString = meta && meta.name ? meta.name : url ? url : 'Metapage Application';
-	if (url) {
-		return Object(preact_min["h"])(
-			'a',
-			{ href: url },
-			nameString
-		);
-	} else {
-		return nameString;
-	}
-};
-
-// const get
-
-// props: metapage, definition, url
-
-var header_Header = function (_Component) {
-	header__inherits(Header, _Component);
-
-	function Header() {
-		header__classCallCheck(this, Header);
-
-		return header__possibleConstructorReturn(this, _Component.apply(this, arguments));
-	}
-
-	Header.prototype.render = function render(props) {
-		for (var i = 0; i < header_RequiredProps.length; i++) {
-			var propName = header_RequiredProps[i];
-			if (!props[propName]) {
-				return Object(preact_min["h"])(
-					'div',
-					{ 'class': 'siimple-alert siimple-alert--error' },
-					'Header is missing: ',
-					propName
-				);
-			}
-		}
-
-		var plugins = !props.definition.plugins ? null : props.definition.plugins.map(function (url) {
-			return Object(preact_min["h"])(plugin_Plugin, { id: url, url: url, metapage: props.metapage });
-			// return <a class="siimple-navbar-item" id={url} href={url}>{url}</a>;
-		});
-
-		return Object(preact_min["h"])(
-			'div',
-			{ 'class': 'siimple-navbar' },
-			Object(preact_min["h"])(
-				'div',
-				{ 'class': 'siimple-navbar-title' },
-				header_getMetapageName(props)
-			),
-			Object(preact_min["h"])(
-				'div',
-				{ 'class': 'siimple--float-right' },
-				plugins
-			)
-		);
-
-		// return <header >
-		// 	<h1>{getMetapageName(props)}</h1>
-		// </header>
-	};
-
-	return Header;
-}(preact_min["Component"]);
-
-
-;
-// CONCATENATED MODULE: ./components/alert.js
-
-
-function alert__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function alert__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function alert__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-var alert_Alert = function (_Component) {
-    alert__inherits(Alert, _Component);
-
-    function Alert() {
-        alert__classCallCheck(this, Alert);
-
-        return alert__possibleConstructorReturn(this, _Component.apply(this, arguments));
-    }
-
-    Alert.prototype.render = function render(props) {
-        var message = '' + props.message;
-        var level = '' + props.level;
-        level = level ? level : 'primary';
-        var className = 'siimple-alert siimple-alert--' + level;
-        return Object(preact_min["h"])(
-            'div',
-            { 'class': className },
-            message
-        );
-    };
-
-    return Alert;
-}(preact_min["Component"]);
-
-
-// CONCATENATED MODULE: ./components/metaframe.js
-
-
-function metaframe__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function metaframe__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function metaframe__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 
 
@@ -340,20 +123,20 @@ var _ref2 = Object(preact_min["h"])(
 );
 
 var metaframe_Metaframe = function (_Component) {
-	metaframe__inherits(Metaframe, _Component);
+	_inherits(Metaframe, _Component);
 
 	function Metaframe() {
 		var _temp, _this, _ret;
 
-		metaframe__classCallCheck(this, Metaframe);
+		_classCallCheck(this, Metaframe);
 
 		for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
 			args[_key] = arguments[_key];
 		}
 
-		return _ret = (_temp = (_this = metaframe__possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.shouldComponentUpdate = function () {
+		return _ret = (_temp = (_this = _possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.shouldComponentUpdate = function () {
 			return false;
-		}, _temp), metaframe__possibleConstructorReturn(_this, _ret);
+		}, _temp), _possibleConstructorReturn(_this, _ret);
 	}
 
 	// ensures the metaframe iframes aren't messed with
@@ -411,48 +194,289 @@ var metaframe_Metaframe = function (_Component) {
 	return Metaframe;
 }(preact_min["Component"]);
 
-// export default class ViewMetaframe extends Component {
-// 	render(props) {
-// 		const style = props.style;
-// 		// const classes = props.classes;
-// 		const metaframe = <Metaframe id={props.id} iframe={props.iframe} maxHeight={props.maxHeight} />
-// 		const header = props.displayName ? <div class="siimple-card-header">{props.id}</div> : undefined;
-// console.log('header', header);
-// console.log('props.displayName', props.displayName);
-// If you return an undefined header, it still shows a stupid grey bar
-// const classes = `siimple-card ${props.classes != null ? props.classes : ""}`;
-// return header ?
-// 	(<div class={classes} id={props.id} style={style} >
-// 		{header}
-// 		<div class="siimple-card-body">
-// 			{metaframe}
-// 		</div>
-// 	</div>)
-// 	:
-// 	(<div class={classes} id={props.id} style={style} >
-// 		<div class="siimple-card-body">
-// 			{metaframe}
-// 		</div>
-// 	</div>);
-// 	}
-// }
+
+// CONCATENATED MODULE: ./components/plugin-panel.js
+
+
+function plugin_panel__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function plugin_panel__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function plugin_panel__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 
 
-// CONCATENATED MODULE: ./components/view_metapage.js
+
+// NOT TRUE: This does not have mechanisms to show/hide, assumed a parent component does that
+// props: metapage, definition
+
+var plugin_panel__ref2 = Object(preact_min["h"])('div', { 'class': 'siimple-rule siimple--mb-5' });
+
+var plugin_panel_PluginPanel = function (_Component) {
+    plugin_panel__inherits(PluginPanel, _Component);
+
+    function PluginPanel() {
+        plugin_panel__classCallCheck(this, PluginPanel);
+
+        return plugin_panel__possibleConstructorReturn(this, _Component.apply(this, arguments));
+    }
+
+    PluginPanel.prototype.render = function render(_ref) {
+        var metapage = _ref.metapage,
+            definition = _ref.definition,
+            selected = _ref.selected;
 
 
-function view_metapage__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+        var pluginUrls = metapage.getPluginIds();
+        var plugins = pluginUrls.map(function (url, index) {
+            var styleHidden = index == selected ? { maxHeight: "300px", height: "300px", display: "" } : { display: 'none' };
+            var pluginMetaframe = metapage.getPlugin(url);
+            var metaframeContainer = Object(preact_min["h"])(
+                'div',
+                { 'class': 'siimple-card-body' },
+                Object(preact_min["h"])(metaframe_Metaframe, { id: url, iframe: pluginMetaframe.iframe, style: { maxHeight: "280px", height: "280px" } })
+            );
 
-function view_metapage__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+            return Object(preact_min["h"])(
+                'div',
+                { 'class': 'siimple-card', id: url, style: styleHidden },
+                metaframeContainer
+            );
+        });
 
-function view_metapage__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+        var rule = selected > -1 ? plugin_panel__ref2 : null;
+
+        // TODO get the metapage itself, not the definition
+        // otherwise it's too much parsing the definition all
+        // over the place, instead of making the same function call
+        return Object(preact_min["h"])(
+            'div',
+            { id: 'PluginPanel' },
+            plugins,
+            rule
+        );
+    };
+
+    return PluginPanel;
+}(preact_min["Component"]);
+// CONCATENATED MODULE: ./components/header.js
+
+
+function header__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function header__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function header__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var RequiredProps = ['definition', 'metapage'];
+
+var header_getMetapageName = function getMetapageName(_ref) {
+	var definition = _ref.definition,
+	    url = _ref.url;
+
+	var meta = definition ? definition.meta : null;
+	var nameString = meta && meta.name ? meta.name : url ? url : 'Metapage Application';
+	if (url) {
+		return Object(preact_min["h"])(
+			'a',
+			{ href: url },
+			nameString
+		);
+	} else {
+		return nameString;
+	}
+};
+
+// props: metapage, definition, url
+
+var header__ref2 = Object(preact_min["h"])('div', { 'class': 'siimple-spinner siimple-spinner--primarysiimple--float-right' });
+
+var header_Header = function (_Component) {
+	header__inherits(Header, _Component);
+
+	function Header() {
+		var _temp, _this, _ret;
+
+		header__classCallCheck(this, Header);
+
+		for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+			args[_key] = arguments[_key];
+		}
+
+		return _ret = (_temp = (_this = header__possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
+			pluginDefinitions: null,
+			selectedIndex: -1
+		}, _this.getPluginTabs = function () {
+			var pluginDefinitions = _this.state.pluginDefinitions;
+			if (!pluginDefinitions) {
+				return header__ref2;
+			}
+
+			var pluginKeys = _this.props.metapage.getPluginIds(); //Object.keys(pluginDefinitions);
+
+			if (pluginKeys.length == 0) {
+				return null;
+			}
+
+			var elements = pluginKeys.map(function (pluginId) {
+				var pluginMetaframeDefinition = pluginDefinitions[pluginId];
+
+				// TODO process version when needed
+				var pluginMetadata = pluginMetaframeDefinition.metadata;
+
+				if (pluginMetadata && pluginMetadata.name) {
+					return pluginMetadata.name;
+				} else if (pluginMetadata && pluginMetadata.title) {
+					return pluginMetadata.title;
+				} else {
+					// what should I use as the short link name?
+					// the last part of the url
+					var url = new URL(pluginId);
+					if (url.pathname.length > 1) {
+						return url.pathname.split('/')[url.pathname.split('/').length - 1];
+					} else {
+						// no path, then just the domain
+						return url.host.replace('www.', '');
+					}
+				}
+			}).map(function (tabName, index) {
+				var onClick = function onClick() {
+					_this.setState({ selectedIndex: _this.state.selectedIndex == index ? -1 : index });
+				};
+				var cls = "siimple-tabs-item siimple--float-right";
+				if (index == _this.state.selectedIndex) {
+					cls += " siimple-tabs-item--selected";
+				}
+				return Object(preact_min["h"])(
+					'div',
+					{ 'class': cls, onClick: onClick },
+					tabName
+				);
+			});
+
+			return Object(preact_min["h"])(
+				'div',
+				{ 'class': 'siimple-tabs siimple-tabs--boxed' },
+				elements
+			);
+		}, _temp), header__possibleConstructorReturn(_this, _ret);
+	}
+
+	Header.prototype.componentDidMount = function componentDidMount() {
+		var _this2 = this;
+
+		// load the plugin definitions (async) so we can show
+		// the plugin names
+
+		if (this.props.metapage && this.props.definition && this.props.definition.plugins) {
+			var pluginDefinitions = {};
+			var metapage = this.props.metapage;
+			var promises = metapage.getPluginIds().map(function (url) {
+				return metapage.getPlugin(url).getDefinition().then(function (metaframeDefinition) {
+					pluginDefinitions[url] = metaframeDefinition;
+				});
+			});
+			Promise.all(promises).then(function () {
+				_this2.setState({ pluginDefinitions: pluginDefinitions });
+			});
+		} else {
+			this.setState({ pluginDefinitions: {} }); // means loaded
+		}
+	};
+
+	Header.prototype.render = function render(props) {
+		for (var i = 0; i < RequiredProps.length; i++) {
+			var propName = RequiredProps[i];
+			if (!props[propName]) {
+				return Object(preact_min["h"])(
+					'div',
+					{ 'class': 'siimple-alert siimple-alert--error' },
+					'Header is missing: ',
+					propName
+				);
+			}
+		}
+
+		var tabs = this.getPluginTabs();
+
+		return Object(preact_min["h"])(
+			'div',
+			null,
+			Object(preact_min["h"])(
+				'div',
+				{ 'class': 'siimple-navbar siimple-navbar--large siimple-navbar--light siimple--clearfix siimple--bg-white siimple--px-0 siimple--mx-0', style: { maxWidth: '100%' } },
+				Object(preact_min["h"])(
+					'div',
+					{ 'class': 'siimple-navbar-title siimple--float-left siimple--pl-3' },
+					header_getMetapageName(props)
+				),
+				tabs
+			),
+			Object(preact_min["h"])(
+				'div',
+				null,
+				Object(preact_min["h"])(plugin_panel_PluginPanel, { selected: this.state.selectedIndex, metapage: props.metapage, definition: props.definition })
+			)
+		);
+	};
+
+	return Header;
+}(preact_min["Component"]);
+
+
+;
+// CONCATENATED MODULE: ./components/alert.js
+
+
+function alert__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function alert__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function alert__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+var alert_Alert = function (_Component) {
+    alert__inherits(Alert, _Component);
+
+    function Alert() {
+        alert__classCallCheck(this, Alert);
+
+        return alert__possibleConstructorReturn(this, _Component.apply(this, arguments));
+    }
+
+    Alert.prototype.render = function render(props) {
+        var message = '' + props.message;
+        var level = '' + props.level;
+        level = level ? level : 'primary';
+        var className = 'siimple-alert siimple-alert--' + level;
+        return Object(preact_min["h"])(
+            'div',
+            { 'class': className },
+            message
+        );
+    };
+
+    return Alert;
+}(preact_min["Component"]);
+
+
+// CONCATENATED MODULE: ./components/metapage.js
+
+
+function metapage__classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function metapage__possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function metapage__inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 
 
 
 var getLayout = function getLayout(metapageDefinition, layoutName) {
-	// console.log('getLayout metapageDefinition', metapageDefinition);
 	if (metapageDefinition == null || metapageDefinition.meta == null || metapageDefinition.meta.layouts == null) {
 		return null;
 	}
@@ -484,7 +508,6 @@ var generateDefaultLayout = function generateDefaultLayout(metapage) {
 	if (metaframeIds.length < 2) {
 		columns = 1;
 	}
-	console.log('columns', columns);
 	metaframeIds.sort();
 	var result = [];
 	var rowIndex = 0;
@@ -503,48 +526,29 @@ var generateDefaultLayout = function generateDefaultLayout(metapage) {
 	return { layout: { layout: result }, layoutName: 'flexboxgrid' };
 };
 
-// const getCssNumber = (val, defaultVal) => {
-// 	if (val) {
-// 		switch(typeof(val)) {
-// 			case 'number': {
-// 				return val;
-// 			}
-// 			case 'string': {
-// 				if (val.endsWith('px')) {
-// 					return parseFloat(val.replace('px', ''));
-// 				} else {
-// 					return parseFloat(val);
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return defaultVal;
-// }
-
 /**
  * Generate the virtual dom of the layed out metaframes
  * @param {*} layout 
  * @param {*} metapage 
  *    "meta": {
-//     "plugins": [],
-//     "layouts": {
-//       "flexboxgrid" : {
-//         "version": 1,
-//         "docs": "http://flexboxgrid.com/",
-//         "layout": [
-//           [ {"name":"input-button", "width":"col-xs-4", "height": "200px"}, {"name":"viewer1", "width":"col-xs-8"}  ],
-//           [ {"name":"passthrough1", "width":"col-xs-6", "height": "100px"}, {"name":"viewer2", "width":"col-xs-4"} ],
-//           [ {"name":"passthrough2", "width":"col-xs-4", "height": "300px"}, {"name":"viewer3", "width":"col-xs-4"} ]
-//         ],
-//         "options": {
-//           "arrows": true
-//         }
-//       }
-//     }
-//   }
+ *      "plugins": [],
+ *      "layouts": {
+ *        "flexboxgrid" : {
+ *          "version": 1,
+ *          "docs": "http://flexboxgrid.com/",
+ *          "layout": [
+ *            [ {"name":"input-button", "width":"col-xs-4", "height": "200px"}, {"name":"viewer1", "width":"col-xs-8"}  ],
+ *            [ {"name":"passthrough1", "width":"col-xs-6", "height": "100px"}, {"name":"viewer2", "width":"col-xs-4"} ],
+ *            [ {"name":"passthrough2", "width":"col-xs-4", "height": "300px"}, {"name":"viewer3", "width":"col-xs-4"} ]
+ *          ],
+ *          "options": {
+ *            "arrows": true
+ *          }
+ *        }
+ *      }
+ *    }
  */
-
-var view_metapage_getFlexboxRowElementMetaframe = function getFlexboxRowElementMetaframe(params) {
+var metapage_getFlexboxRowElementMetaframe = function getFlexboxRowElementMetaframe(params) {
 	var rowElement = params.rowElement,
 	    metaframes = params.metaframes,
 	    defaultRowStyle = params.defaultRowStyle;
@@ -579,7 +583,7 @@ var view_metapage_getFlexboxRowElementMetaframe = function getFlexboxRowElementM
 };
 
 // This iframe is sandboxed
-var view_metapage_getFlexboxRowElementUrl = function getFlexboxRowElementUrl(params) {
+var metapage_getFlexboxRowElementUrl = function getFlexboxRowElementUrl(params) {
 	var rowElement = params.rowElement,
 	    defaultRowStyle = params.defaultRowStyle;
 	var url = rowElement.url,
@@ -601,13 +605,13 @@ var view_metapage_getFlexboxRowElementUrl = function getFlexboxRowElementUrl(par
 
 var getFlexboxRowElement = function getFlexboxRowElement(params) {
 	if (params.rowElement.url) {
-		return view_metapage_getFlexboxRowElementUrl(params);
+		return metapage_getFlexboxRowElementUrl(params);
 	} else {
-		return view_metapage_getFlexboxRowElementMetaframe(params);
+		return metapage_getFlexboxRowElementMetaframe(params);
 	}
 };
 
-var view_metapage_applyLayout = function applyLayout(name, layout, metapage) {
+var metapage_applyLayout = function applyLayout(name, layout, metapage) {
 	name = name ? name : 'flexboxgrid';
 	var metaframes = metapage.metaframes();
 
@@ -634,13 +638,13 @@ var view_metapage_applyLayout = function applyLayout(name, layout, metapage) {
 	}
 };
 
-var view_metapage_ViewMetapage = function (_Component) {
-	view_metapage__inherits(ViewMetapage, _Component);
+var metapage_ViewMetapage = function (_Component) {
+	metapage__inherits(ViewMetapage, _Component);
 
 	function ViewMetapage() {
-		view_metapage__classCallCheck(this, ViewMetapage);
+		metapage__classCallCheck(this, ViewMetapage);
 
-		return view_metapage__possibleConstructorReturn(this, _Component.apply(this, arguments));
+		return metapage__possibleConstructorReturn(this, _Component.apply(this, arguments));
 	}
 
 	ViewMetapage.prototype.render = function render(props) {
@@ -663,7 +667,7 @@ var view_metapage_ViewMetapage = function (_Component) {
 			layout = _generateDefaultLayou.layout;
 		}
 
-		var metaframesArranged = view_metapage_applyLayout(layoutName, layout, metapage);
+		var metaframesArranged = metapage_applyLayout(layoutName, layout, metapage);
 
 		return Object(preact_min["h"])(
 			'div',
@@ -726,7 +730,8 @@ var exampleJson = JSON.stringify({
 				"source": "y"
 			}]
 		}
-	}
+	},
+	"plugins": ["https://metapages.org/metaframes/mermaid.js/?TITLE=0", "https://metapages.org/metaframes/passthrough/", "https://metapages.github.io/metaframe-editor-json/"]
 }, null, "  ");
 
 var examples = ['https://metapages.org/metapages/linked-molecule-viewers/metapage.json', 'https://metapages.org/metapages/dynamic-plot/metapage.json'].map(function (url) {
@@ -1152,13 +1157,12 @@ var app_MetapageApp = function (_Component) {
 			var metapage = _this.state.metapage;
 			var metapageDefinition = _this.state.metapageDefinition;
 
-			//<Plugins definition={metapageDefinition} />
 			var header = _this.state.params['header'] == '0' ? null : Object(preact_min["h"])(header_Header, { definition: metapageDefinition, metapage: metapage, url: _this.state.url });
 			return Object(preact_min["h"])(
 				'div',
 				{ id: 'app' },
 				header,
-				Object(preact_min["h"])(view_metapage_ViewMetapage, { definition: metapageDefinition, metapage: metapage, setHashParameter: setHashParameter })
+				Object(preact_min["h"])(metapage_ViewMetapage, { definition: metapageDefinition, metapage: metapage, setHashParameter: setHashParameter })
 			);
 		}, _temp), app__possibleConstructorReturn(_this, _ret);
 	}
@@ -1244,7 +1248,7 @@ var app_MetapageApp = function (_Component) {
 
 
 
-/* harmony default export */ var index = __webpack_exports__["default"] = (app_MetapageApp);
+/* harmony default export */ var index_0 = __webpack_exports__["default"] = (app_MetapageApp);
 
 /***/ }),
 
