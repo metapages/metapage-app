@@ -116,7 +116,7 @@ var metaframe__ref = Object(preact_min["h"])(
 	"Metaframe class is missing id prop"
 );
 
-var metaframe__ref2 = Object(preact_min["h"])(
+var _ref2 = Object(preact_min["h"])(
 	"div",
 	{ "class": "siimple-alert siimple-alert--error" },
 	"iframe is not a Node"
@@ -167,7 +167,7 @@ var metaframe_Metaframe = function (_Component) {
 			);
 		}
 		if (!(props.iframe instanceof Node)) {
-			return metaframe__ref2;
+			return _ref2;
 		}
 
 		// Optionally show a warning instead of the metaframe if missing required configuration
@@ -507,6 +507,7 @@ function metapage__inherits(subClass, superClass) { if (typeof superClass !== "f
 
 
 
+
 var getLayout = function getLayout(metapageDefinition, layoutName) {
 	if (metapageDefinition == null || metapageDefinition.meta == null || metapageDefinition.meta.layouts == null) {
 		return null;
@@ -578,13 +579,34 @@ var generateDefaultLayout = function generateDefaultLayout(metapage) {
  *      }
  *    }
  */
+
+var metapage__ref = Object(preact_min["h"])(
+	'div',
+	{ 'class': 'siimple-alert siimple-alert--error' },
+	'Missing metaframes parameter'
+);
+
 var metapage_getFlexboxRowElementMetaframe = function getFlexboxRowElementMetaframe(params) {
 	var rowElement = params.rowElement,
 	    metaframes = params.metaframes,
 	    defaultRowStyle = params.defaultRowStyle;
 
+	if (!metaframes) {
+		return metapage__ref;
+	}
+
 	defaultRowStyle = defaultRowStyle ? defaultRowStyle : {};
 	var metaframeId = rowElement.name;
+
+	if (!metaframes[metaframeId]) {
+		return Object(preact_min["h"])(
+			'div',
+			{ 'class': 'siimple-alert siimple-alert--error' },
+			'Missing metaframe: ',
+			metaframeId
+		);
+	}
+
 	var colClass = rowElement.width ? rowElement.width : 'col-xs';
 	var itemStyle = rowElement.style ? rowElement.style : defaultRowStyle;
 	var classes = 'siimple-card ' + colClass;
@@ -686,8 +708,8 @@ var metapage_ViewMetapage = function (_Component) {
 
 		if (this.props.metapage) {
 			var metapage = this.props.metapage;
-			metapage.on('definition', function (_ref) {
-				var definition = _ref.definition;
+			metapage.on('definition', function (_ref2) {
+				var definition = _ref2.definition;
 
 				_this2.setState({ definition: definition });
 			});
@@ -696,9 +718,9 @@ var metapage_ViewMetapage = function (_Component) {
 		}
 	};
 
-	ViewMetapage.prototype.render = function render(_ref2, _ref3) {
-		var metapage = _ref2.metapage;
-		var definition = _ref3.definition;
+	ViewMetapage.prototype.render = function render(_ref3, _ref4) {
+		var metapage = _ref3.metapage;
+		var definition = _ref4.definition;
 
 		if (!definition) {
 			return null;
@@ -869,7 +891,7 @@ var app__ref2 = Object(preact_min["h"])('br', null);
 
 var app__ref3 = Object(preact_min["h"])('br', null);
 
-var _ref4 = Object(preact_min["h"])('div', { 'class': 'siimple-spinner siimple-spinner--primary' });
+var app__ref4 = Object(preact_min["h"])('div', { 'class': 'siimple-spinner siimple-spinner--primary' });
 
 var _ref5 = Object(preact_min["h"])(
 	'div',
@@ -1209,7 +1231,7 @@ var app_MetapageApp = function (_Component) {
 					{ 'class': 'siimple-list-item' },
 					alert
 				),
-				_ref4
+				app__ref4
 			);
 		}, _this.renderStatusLoaded = function () {
 			if (_this.state.metapage && _this.state.metapageDefinition) {
